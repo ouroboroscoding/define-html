@@ -1,0 +1,52 @@
+{
+	"name": "@ouroboros/define-html",
+	"version": "1.0.0",
+	"description": "HTML Components for use on @ouroboros/define types",
+	"main": "lib/index.js",
+	"types": "lib/index.d.ts",
+	"scripts": {
+		"build": "tslint -p tsconfig.json && tsc",
+		"clean": "rm Rf lib/*",
+		"test": "echo \"Error: no test specified.\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ouroboroscoding/define-html.git"
+	},
+	"keywords": [
+		"@ouroboros/define",
+		"html",
+		"react"
+	],
+	"author": "Chris Nasr <chris@ouroboroscoding.com>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/ouroboroscoding/define-html/issues"
+	},
+	"devDependencies": {
+		"@types/node": "^18.14.0",
+		"@types/react": "^18.0.28",
+		"@types/uuid": "^9.0.0",
+		"tslint": "^6.1.3",
+		"tslint-config-prettier": "^1.18.0",
+		"typescript": "^4.8.3"
+	},
+	"dependencies": {
+		"@ouroboros/browser": "^0.5.0",
+		"@ouroboros/clone": "^1.1.0",
+		"@ouroboros/dates": "^1.1.0",
+		"@ouroboros/subscribe": "^1.3.1",
+		"@ouroboros/tools": "^0.7.0",
+		"csv-writer-browser": "^1.0.0",
+		"prop-types": "^15.8.1",
+		"react-router-dom": "^7.5.2",
+		"uuid": "^9.0.0"
+	},
+	"peerDependencies": {
+		"@emotion/react": "^11.8.2",
+		"@emotion/styled": "^11.8.1",
+		"@ouroboros/define": "^1.1.3",
+		"react": "^17.0.2 || ^18.0.0",
+		"react-dom": "^17.0.2 || ^18.0.0"
+	}
+}
