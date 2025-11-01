@@ -1,15 +1,18 @@
 /**
- * Define Node Datetime
+ * Define Node Password
  *
- * Handles a single datetime define element
+ * Handles a single string define element
  *
  * @author Chris Nasr <chris@ouroboroscoding.com>
  * @copyright Ouroboros Coding Inc.
  * @created 2023-02-17
  */
 
+// Ouroboros modules
+import { Node } from '@ouroboros/define';
+
 // NPM modules
-import React from 'react';
+import React, { InputHTMLAttributes } from 'react';
 
 // Local components
 import DefineNodeBase from './Base';
@@ -18,28 +21,35 @@ import DefineNodeBase from './Base';
 import { DefineNodeBaseProps } from './Base';
 
 /**
- * Node Datetime
+ * Node Password
  *
- * Handles values that represent a date with a time
+ * Handles values that are strings or string-like
  *
- * @name DefineNodeDatetime
+ * @name DefineNodePassword
  * @access public
  * @extends DefineNodeBase
  */
-export default class DefineNodeDatetime extends DefineNodeBase {
+export default class DefineNodePassword extends DefineNodeBase {
 
 	/**
 	 * Constructor
 	 *
 	 * Creates a new instance
 	 *
-	 * @name DefineNodeDatetime
+	 * @name DefineNodePassword
 	 * @access public
 	 * @param props Properties passed to the component
 	 * @returns a new instance
 	 */
 	constructor(props: DefineNodeBaseProps) {
 		super(props);
+
+		// If there's a regex, override the node
+		if('__regex__' in props.display) {
+			(props.node as Node).regex(props.display.__regex__);
+		}
+
+		// Bind methods
 		this.change = this.change.bind(this);
 	}
 
@@ -50,20 +60,12 @@ export default class DefineNodeDatetime extends DefineNodeBase {
 	 *
 	 * @name change
 	 * @access public
-	 * @param part The part of the date/time
-	 * @param value The new value
+	 * @param event The event triggered by the change
 	 */
-	change(part: 'date' | 'time', value: string): void {
+	change(event: React.ChangeEvent<HTMLInputElement>): void {
 
-		// Init the new value
-		let sValue: string;
-
-		// If we got the date part
-		if(part === 'date') {
-			sValue = value + ' ' + this.state.value.substring(11, 19);
-		} else {
-			sValue = this.state.value.substring(0, 10) + ' ' + value;
-		}
+		// Store the value
+		let sValue = event.target.value;
 
 		// If there's a callback
 		if(this.props.onChange) {
@@ -73,7 +75,7 @@ export default class DefineNodeDatetime extends DefineNodeBase {
 			}
 		}
 
-		// Check if it's valid
+		// Check the new value is valid
 		let error: string | false = false;
 		if(this.props.validation && !this.props.node.valid(sValue)) {
 			error = this.props.node.validationFailures[0][1];
@@ -105,39 +107,33 @@ export default class DefineNodeDatetime extends DefineNodeBase {
 						this.state.error;
 		}
 
+		// Initial props
+		const props: InputHTMLAttributes<HTMLInputElement> = {
+			className: `form-field field-${this.props.name} node-password`,
+			id: this.props.name,
+			onKeyDown: this.keyDown,
+			onChange: this.change,
+			placeholder: (this.props.label === 'placeholder')
+				? this.props.placeholder || this.props.display.__title__
+				: this.props.placeholder,
+			type: 'password',
+			value: this.state.value === null ? '' : this.state.value
+		}
+
 		// Render
-		return (
-			<div className={`form-field field-${this.props.name} node-datetime`}>
-				{this.props.label === 'above' &&
-					<label>{this.props.display.__title__}</label>
-				}
-				<div className="flex-columns node-datetime-fields">
-					<div className="flex-grow node-datetime-date">
-						<input
-							className="form-input"
-							onChange={ev => this.change('date', ev.target.value)}
-							onKeyDown={this.keyDown}
-							type="date"
-							value={this.state.value.substring(0, 10)}
-						/>
-					</div>
-					<div className="flex-grow node-datetime-time">
-						<input
-							className="form-input"
-							onChange={ev => this.change('time', ev.target.value)}
-							onKeyDown={this.keyDown}
-							type="time"
-							value={this.state.value.substring(11, 19)}
-						/>
-					</div>
-				</div>
-				{sError &&
-					<p className="define-error">{sError as string}</p>
-				}
-			</div>
-		);
+		return <>
+			{this.props.label === 'above' &&
+				<label htmlFor={this.props.name}>
+					{this.props.display.__title__}
+				</label>
+			}
+			<input {...props} />
+			{sError &&
+				<p className="define-error">{sError as string}</p>
+			}
+		</>;
 	}
 }
 
 // Register with Node
-DefineNodeBase.pluginAdd('datetime', DefineNodeDatetime);
+DefineNodeBase.pluginAdd('password', DefineNodePassword);

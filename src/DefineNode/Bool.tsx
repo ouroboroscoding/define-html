@@ -81,15 +81,16 @@ export default class DefineNodeBool extends DefineNodeBase {
 	 */
 	render() {
 		return (
-			<div className={`form-field field_${this.props.name} node-bool`}>
-				<p className="label">{this.props.display.__title__}</p>
-				<p><input
+			<div className={`form-field field-${this.props.name} node-bool`}>
+				<label htmlFor={this.props.name}>{this.props.display.__title__}</label>
+				<input
 					checked={this.state.value ? true : false}
+					id={this.props.name}
 					onChange={this.change}
 					type="checkbox"
-				/></p>
+				/>
 				{this.state.error !== false &&
-					<p className="error">{this.state.error as string}</p>
+					<p className="define-error">{this.state.error as string}</p>
 				}
 			</div>
 		);

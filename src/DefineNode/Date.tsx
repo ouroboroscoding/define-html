@@ -96,19 +96,20 @@ export default class DefineNodeDate extends DefineNodeBase {
 
 		// Render
 		return (
-			<div className={`form-field field_${this.props.name} node-date`}>
+			<div className={`form-field field-${this.props.name} node-date`}>
 				{this.props.label === 'above' &&
-					<p className="label">{this.props.display.__title__}</p>
+					<label htmlFor={this.props.name}>{this.props.display.__title__}</label>
 				}
 				<input
 					className="form-input"
-					onKeyPress={this.keyPressed}
+					id={this.props.name}
+					onKeyDown={this.keyDown}
 					onChange={this.change}
 					type="date"
 					value={this.state.value === null ? '' : this.state.value}
 				/>
 				{sError !== false &&
-					<p className="error">{sError as string}</p>
+					<p className="define-error">{sError as string}</p>
 				}
 			</div>
 		);

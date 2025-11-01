@@ -50,10 +50,10 @@ export {
 //	Options
 export type labelOptions = 'above' | 'none' | 'placeholder';
 export type typeOptions = 'create' | 'search' | 'update';
-export type variantOptions = 'filled' | 'outlined' | 'standard';
+//export type variantOptions = 'filled' | 'outlined' | 'standard';
 //	Callbacks
 export type onChangeCallback = (value: any, oldValue: any) => void;
-export type onEnterPressedCallback = () => void;
+export type onEnterCallback = () => void;
 //	Props
 export type DefineNodeProps = {
 	display?: Record<string, any>,
@@ -62,13 +62,12 @@ export type DefineNodeProps = {
 	name: string,
 	node: Node,
 	onChange?: onChangeCallback,
-	onEnterPressed?: onEnterPressedCallback,
+	onEnter?: onEnterCallback,
 	placeholder?: string,
 	ref?: any,
 	type: typeOptions,
 	value?: any,
-	validation?: boolean,
-	variant: variantOptions
+	validation?: boolean
 };
 //	State
 type DefineNodeState = {
@@ -96,19 +95,17 @@ export default class DefineNode extends DefineBase {
 		name: PropTypes.string.isRequired,
 		node: PropTypes.instanceOf(Node).isRequired,
 		onChange: PropTypes.func,
-		onEnterPressed: PropTypes.func,
+		onEnter: PropTypes.func,
 		placeholder: PropTypes.string,
 		type: PropTypes.oneOf(['create', 'search', 'update']).isRequired,
 		value: PropTypes.any,
-		validation: PropTypes.bool,
-		variant: PropTypes.oneOf(['filled', 'outlined', 'standard'])
+		validation: PropTypes.bool
 	}
 	static defaultProps = {
 		error: false,
-		label: 'placeholder',
+		label: 'above',
 		value: null,
-		validation: true,
-		variant: 'outlined'
+		validation: true
 	}
 
 	// Registered Node types
@@ -143,7 +140,9 @@ export default class DefineNode extends DefineBase {
 		this.state = this.generateState();
 
 		// Add the value
-		this.state.value = props.value !== null ? props.value : this.state.display.__default__
+		this.state.value = props.value !== null
+			? props.value
+			: this.state.display.__default__
 
 		// Child elements
 		this._el = null;
@@ -327,20 +326,18 @@ export default class DefineNode extends DefineBase {
 					error={this.props.error}
 					label={this.props.label}
 					onChange={this.props.onChange}
-					onEnterPressed={this.props.onEnterPressed}
+					onEnter={this.props.onEnter}
 					name={this.props.name}
 					node={this.props.node}
 					ref={(el: DefineNodeBase) => this._el = el}
 					type={this.props.type}
 					value={mValue}
 					validation={this.props.validation}
-					variant={this.props.variant}
 				/>
 				{this.props.type === 'search' &&
 					<DefineNodeSearchOption
 						ref={(el: DefineNodeSearchOption) => this._search = el}
 						type={this.state.type}
-						variant={this.props.variant}
 					/>
 				}
 			</React.Fragment>

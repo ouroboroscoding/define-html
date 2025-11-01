@@ -18,8 +18,7 @@ import React from 'react';
 
 // Types
 import {
-	labelOptions, onChangeCallback, onEnterPressedCallback, typeOptions,
-	variantOptions
+	labelOptions, onChangeCallback, onEnterCallback, typeOptions
 } from './';
 export type DefineNodeBaseProps = {
 	display: Record<string, any>,
@@ -28,13 +27,12 @@ export type DefineNodeBaseProps = {
 	name: string,
 	node: Base,
 	onChange?: onChangeCallback,
-	onEnterPressed?: onEnterPressedCallback,
+	onEnter?: onEnterCallback,
 	placeholder?: string,
 	ref?: any,
 	type: typeOptions,
 	value?: any,
-	validation?: boolean,
-	variant: variantOptions
+	validation?: boolean
 }
 export type DefineNodeBaseState = {
 	error?: string | Record<string, any> | false,
@@ -63,9 +61,9 @@ export default class DefineNodeBase extends React.Component {
 		name: PropTypes.string.isRequired,
 		node: PropTypes.instanceOf(Base).isRequired,
 		onChange: PropTypes.func,
-		onEnterPressed: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
+		onEnter: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
 		placeholder: PropTypes.string,
-		type: PropTypes.oneOf(['create', 'search', 'update']).isRequired,
+		type: PropTypes.oneOf([ 'create', 'search', 'update' ]).isRequired,
 		value: PropTypes.any
 	}
 
@@ -79,7 +77,11 @@ export default class DefineNodeBase extends React.Component {
 	state: DefineNodeBaseState;
 
 	// Registered Node types
-	static pluginAdd(name: string, componentClass: typeof DefineNodeBase, defaultValue: any = '') {
+	static pluginAdd(
+		name: string,
+		componentClass: typeof DefineNodeBase,
+		defaultValue: any = ''
+	) {
 		DefineNodeBase._plugins[name] = {
 			class_: componentClass,
 			default_: defaultValue,
@@ -108,7 +110,7 @@ export default class DefineNodeBase extends React.Component {
 		}
 
 		// Bind the methods
-		this.keyPressed = this.keyPressed.bind(this);
+		this.keyDown = this.keyDown.bind(this);
 	}
 
 	/**
@@ -155,17 +157,17 @@ export default class DefineNodeBase extends React.Component {
 	}
 
 	/**
-	 * Key Pressed
+	 * Key Down
 	 *
 	 * Called to trap Enter key presses
 	 *
-	 * @name keyPressed
+	 * @name keyDown
 	 * @access public
 	 * @param event The event, aka, the key pressed
 	 */
-	keyPressed(event: React.KeyboardEvent<HTMLInputElement>): void {
-		if(event.key === 'Enter' && this.props.onEnterPressed) {
-			this.props.onEnterPressed();
+	keyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
+		if(event.key === 'Enter' && this.props.onEnter) {
+			this.props.onEnter();
 		}
 	}
 

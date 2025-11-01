@@ -1,7 +1,7 @@
 /**
- * Define Node Datetime
+ * Define Node Phone Number
  *
- * Handles a single datetime define element
+ * Handles a single string define element
  *
  * @author Chris Nasr <chris@ouroboroscoding.com>
  * @copyright Ouroboros Coding Inc.
@@ -10,6 +10,7 @@
 
 // NPM modules
 import React from 'react';
+import { PatternFormat, NumberFormatValues } from 'react-number-format';
 
 // Local components
 import DefineNodeBase from './Base';
@@ -18,22 +19,22 @@ import DefineNodeBase from './Base';
 import { DefineNodeBaseProps } from './Base';
 
 /**
- * Node Datetime
+ * Node Phone Number
  *
- * Handles values that represent a date with a time
+ * Handles values that are phone numbers
  *
- * @name DefineNodeDatetime
+ * @name DefineNodePhoneNumber
  * @access public
  * @extends DefineNodeBase
  */
-export default class DefineNodeDatetime extends DefineNodeBase {
+export default class DefineNodePhoneNumber extends DefineNodeBase {
 
 	/**
 	 * Constructor
 	 *
 	 * Creates a new instance
 	 *
-	 * @name DefineNodeDatetime
+	 * @name DefineNodePhoneNumber
 	 * @access public
 	 * @param props Properties passed to the component
 	 * @returns a new instance
@@ -50,20 +51,12 @@ export default class DefineNodeDatetime extends DefineNodeBase {
 	 *
 	 * @name change
 	 * @access public
-	 * @param part The part of the date/time
-	 * @param value The new value
+	 * @param value The new phone number
 	 */
-	change(part: 'date' | 'time', value: string): void {
+	change(o: NumberFormatValues): void {
 
-		// Init the new value
-		let sValue: string;
-
-		// If we got the date part
-		if(part === 'date') {
-			sValue = value + ' ' + this.state.value.substring(11, 19);
-		} else {
-			sValue = this.state.value.substring(0, 10) + ' ' + value;
-		}
+		// Store the value
+		let sValue = o.value;
 
 		// If there's a callback
 		if(this.props.onChange) {
@@ -73,7 +66,7 @@ export default class DefineNodeDatetime extends DefineNodeBase {
 			}
 		}
 
-		// Check if it's valid
+		// Check the new value is valid
 		let error: string | false = false;
 		if(this.props.validation && !this.props.node.valid(sValue)) {
 			error = this.props.node.validationFailures[0][1];
@@ -106,38 +99,24 @@ export default class DefineNodeDatetime extends DefineNodeBase {
 		}
 
 		// Render
-		return (
-			<div className={`form-field field-${this.props.name} node-datetime`}>
-				{this.props.label === 'above' &&
-					<label>{this.props.display.__title__}</label>
-				}
-				<div className="flex-columns node-datetime-fields">
-					<div className="flex-grow node-datetime-date">
-						<input
-							className="form-input"
-							onChange={ev => this.change('date', ev.target.value)}
-							onKeyDown={this.keyDown}
-							type="date"
-							value={this.state.value.substring(0, 10)}
-						/>
-					</div>
-					<div className="flex-grow node-datetime-time">
-						<input
-							className="form-input"
-							onChange={ev => this.change('time', ev.target.value)}
-							onKeyDown={this.keyDown}
-							type="time"
-							value={this.state.value.substring(11, 19)}
-						/>
-					</div>
-				</div>
-				{sError &&
-					<p className="define-error">{sError as string}</p>
-				}
-			</div>
-		);
+		return <>
+			{this.props.label === 'above' &&
+				<label htmlFor={this.props.name}>{this.props.display.__title__}</label>
+			}
+			<PatternFormat
+				allowEmptyFormatting
+				className={`form-field field-${this.props.name} node-phone-number`}
+				format="1 (###) ### ####"
+				mask="_"
+				onValueChange={this.change}
+				value={this.state.value === null ? '' : this.state.value}
+			/>
+			{sError &&
+				<p className="define-error">{sError as string}</p>
+			}
+		</>;
 	}
 }
 
 // Register with Node
-DefineNodeBase.pluginAdd('datetime', DefineNodeDatetime);
+DefineNodeBase.pluginAdd('phone_number', DefineNodePhoneNumber);
