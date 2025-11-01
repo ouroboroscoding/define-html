@@ -91,13 +91,13 @@ export default class DefineNode extends DefineBase {
 	static propTypes = {
 		display: PropTypes.object,
 		error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-		label: PropTypes.oneOf(['above', 'none', 'placeholder']),
+		label: PropTypes.oneOf([ 'above', 'none', 'placeholder' ]),
 		name: PropTypes.string.isRequired,
 		node: PropTypes.instanceOf(Node).isRequired,
 		onChange: PropTypes.func,
 		onEnter: PropTypes.func,
 		placeholder: PropTypes.string,
-		type: PropTypes.oneOf(['create', 'search', 'update']).isRequired,
+		type: PropTypes.oneOf([ 'create', 'search', 'update' ]).isRequired,
 		value: PropTypes.any,
 		validation: PropTypes.bool
 	}
@@ -225,16 +225,13 @@ export default class DefineNode extends DefineBase {
 			case 'uint':
 				return 'number';
 
-			// It it's a timestamp
-			case 'timestamp':
-				return 'timestamp';
-
 			// Else it's its own type
 			case 'bool':
 			case 'date':
 			case 'datetime':
 			case 'price':
 			case 'time':
+			case 'timestamp':
 				return sType;
 
 			default:

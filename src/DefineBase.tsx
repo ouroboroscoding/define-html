@@ -19,9 +19,8 @@ import React from 'react';
 import {
 	labelOptions,
 	onChangeCallback,
-	onEnterPressedCallback,
-	typeOptions,
-	variantOptions } from './DefineNode';
+	onEnterCallback,
+	typeOptions } from './DefineNode';
 
 export type DefineBaseProps = {
 	display?: Record<string, any>,
@@ -32,14 +31,13 @@ export type DefineBaseProps = {
 	name: string,
 	node: Base,
 	onChange?: onChangeCallback,
-	onEnterPressed?: onEnterPressedCallback,
+	onEnter?: onEnterCallback,
 	placeholder?: string,
 	ref?: any,
 	returnAll?: boolean,
 	type: typeOptions,
 	value?: any,
-	validation?: boolean,
-	variant: variantOptions
+	validation?: boolean
 };
 export type gridSizesRange = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 export type gridSizesStruct = {
