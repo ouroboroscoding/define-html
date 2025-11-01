@@ -261,7 +261,7 @@ export default class DefineNodeMultiSelectCSV extends DefineNodeBase {
 
 		// Initial props
 		const props: InputHTMLAttributes<HTMLInputElement> = {
-			className: `form-field field-${this.props.name} node-multiselectcsv`,
+			className: 'form-input',
 			id: this.props.name,
 			onClick: this.open,
 			placeholder: (this.props.label === 'placeholder')
@@ -273,48 +273,51 @@ export default class DefineNodeMultiSelectCSV extends DefineNodeBase {
 			value: this.state.value === null ? '' : this.state.value
 		}
 
-		return <>
-			{this.props.label === 'above' &&
-				<label htmlFor={this.props.name}>{this.props.display.__title__}</label>
-			}
-			<input {...props} />
-			{sError &&
-				<p className="define-error">{sError as string}</p>
-			}
-			{this.state.defaultValues !== null &&
-				<Modal
-					maxWidth={1200}
-					onClose={this.cancel}
-				>
-					<div className="define-modal-title">
-						{this.props.display.__title__}
-					</div>
-					<div className="grid spacing-6">
-						{this.state.options.map(o =>
-							<div
-								className="grid-item xs-12 md-4 lg-2"
-								key={o[0]}
-							>
-								<label>
-									<input
-										defaultChecked={(this.state.defaultValues as string[]).includes(o[0]) ? true : false}
-										ref={ref => this.checks.push(ref as HTMLInputElement)}
-										type="checkbox"
-									/>
-									{o[1]}
-								</label>
-							</div>
-						)}
-					</div>
-					<div className="define-modal-actions">
-						<button
-							className="define-modal-button-submit"
-							onClick={this.submit}
-						>Submit</button>
-					</div>
-				</Modal>
-			}
-		</>;
+		// Render
+		return (
+			<div className={`form-field field-${this.props.name} node-multiselectcsv`}>
+				{this.props.label === 'above' &&
+					<label htmlFor={this.props.name}>{this.props.display.__title__}</label>
+				}
+				<input {...props} />
+				{sError &&
+					<p className="define-error">{sError as string}</p>
+				}
+				{this.state.defaultValues !== null &&
+					<Modal
+						maxWidth={1200}
+						onClose={this.cancel}
+					>
+						<div className="define-modal-title">
+							{this.props.display.__title__}
+						</div>
+						<div className="grid spacing-6">
+							{this.state.options.map(o =>
+								<div
+									className="grid-item xs-12 md-4 lg-2"
+									key={o[0]}
+								>
+									<label>
+										<input
+											defaultChecked={(this.state.defaultValues as string[]).includes(o[0]) ? true : false}
+											ref={ref => this.checks.push(ref as HTMLInputElement)}
+											type="checkbox"
+										/>
+										{o[1]}
+									</label>
+								</div>
+							)}
+						</div>
+						<div className="define-modal-actions">
+							<button
+								className="define-modal-button-submit"
+								onClick={this.submit}
+							>Submit</button>
+						</div>
+					</Modal>
+				}
+			</div>
+		);
 	}
 
 	/**

@@ -107,7 +107,7 @@ export default class DefineNodeNumber extends DefineNodeBase {
 
 		// Initial props
 		const props: InputHTMLAttributes<HTMLInputElement> = {
-			className: `form-field field-${this.props.name} node-number`,
+			className: 'form-input',
 			onKeyDown: this.keyDown,
 			onChange: this.change,
 			placeholder: (this.props.label === 'placeholder')
@@ -127,17 +127,19 @@ export default class DefineNodeNumber extends DefineNodeBase {
 		}
 
 		// Render
-		return <>
-			{this.props.label === 'above' &&
-				<label htmlFor={this.props.name}>
-					{this.props.display.__title__}
-				</label>
-			}
-			<input {...props} />
-			{sError &&
-				<p className="define-error">{sError as string}</p>
-			}
-		</>;
+		return (
+			<div className={`form-field field-${this.props.name} node-number`}>
+				{this.props.label === 'above' &&
+					<label htmlFor={this.props.name}>
+						{this.props.display.__title__}
+					</label>
+				}
+				<input {...props} />
+				{sError &&
+					<p className="define-error">{sError as string}</p>
+				}
+			</div>
+		);
 	}
 }
 

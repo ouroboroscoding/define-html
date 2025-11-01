@@ -114,7 +114,7 @@ export default class DefineNodePrice extends DefineNodeBase {
 		// Initial props
 		const props: NumericFormatProps = {
 			allowNegative: false,
-			className: `form-field field-${this.props.name} node-price`,
+			className: 'form-input',
 			decimalScale: 2,
 			id: this.props.name,
 			inputMode: 'decimal',
@@ -124,6 +124,7 @@ export default class DefineNodePrice extends DefineNodeBase {
 				? this.props.placeholder || this.props.display.__title__
 				: this.props.placeholder,
 			prefix: sAdornment,
+			thousandSeparator: true,
 			value: this.state.value === null ? '' : this.state.value,
 		}
 
@@ -137,17 +138,19 @@ export default class DefineNodePrice extends DefineNodeBase {
 		}
 
 		// Render
-		return <>
-			{this.props.label === 'above' &&
-				<label htmlFor={this.props.name}>
-					{this.props.display.__title__}
-				</label>
-			}
-			<NumericFormat {...props} />
-			{sError &&
-				<p className="define-error">{sError as string}</p>
-			}
-		</>;
+		return (
+			<div className={`form-field field-${this.props.name} node-price`}>
+				{this.props.label === 'above' &&
+					<label htmlFor={this.props.name}>
+						{this.props.display.__title__}
+					</label>
+				}
+				<NumericFormat {...props} />
+				{sError &&
+					<p className="define-error">{sError as string}</p>
+				}
+			</div>
+		);
 	}
 }
 

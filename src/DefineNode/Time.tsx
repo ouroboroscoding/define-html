@@ -1,18 +1,15 @@
 /**
- * Define Node Password
+ * Define Node Time
  *
- * Handles a single string define element
+ * Handles a single time define element
  *
  * @author Chris Nasr <chris@ouroboroscoding.com>
  * @copyright Ouroboros Coding Inc.
  * @created 2023-02-17
  */
 
-// Ouroboros modules
-import { Node } from '@ouroboros/define';
-
 // NPM modules
-import React, { InputHTMLAttributes } from 'react';
+import React from 'react';
 
 // Local components
 import DefineNodeBase from './Base';
@@ -21,35 +18,28 @@ import DefineNodeBase from './Base';
 import { DefineNodeBaseProps } from './Base';
 
 /**
- * Node Password
+ * Node Time
  *
- * Handles values that are strings or string-like
+ * Handles values that represent a time
  *
- * @name DefineNodePassword
+ * @name DefineNodeTime
  * @access public
  * @extends DefineNodeBase
  */
-export default class DefineNodePassword extends DefineNodeBase {
+export default class DefineNodeTime extends DefineNodeBase {
 
 	/**
 	 * Constructor
 	 *
 	 * Creates a new instance
 	 *
-	 * @name DefineNodePassword
+	 * @name DefineNodeDate
 	 * @access public
 	 * @param props Properties passed to the component
 	 * @returns a new instance
 	 */
 	constructor(props: DefineNodeBaseProps) {
 		super(props);
-
-		// If there's a regex, override the node
-		if('__regex__' in props.display) {
-			(props.node as Node).regex(props.display.__regex__);
-		}
-
-		// Bind methods
 		this.change = this.change.bind(this);
 	}
 
@@ -64,8 +54,8 @@ export default class DefineNodePassword extends DefineNodeBase {
 	 */
 	change(event: React.ChangeEvent<HTMLInputElement>): void {
 
-		// Store the value
-		let sValue = event.target.value;
+		// Check the new value is valid
+		let sValue = event.target.value + ':00';
 
 		// If there's a callback
 		if(this.props.onChange) {
@@ -107,28 +97,19 @@ export default class DefineNodePassword extends DefineNodeBase {
 						this.state.error;
 		}
 
-		// Initial props
-		const props: InputHTMLAttributes<HTMLInputElement> = {
-			className: 'form-input',
-			id: this.props.name,
-			onKeyDown: this.keyDown,
-			onChange: this.change,
-			placeholder: (this.props.label === 'placeholder')
-				? this.props.placeholder || this.props.display.__title__
-				: this.props.placeholder,
-			type: 'password',
-			value: this.state.value === null ? '' : this.state.value
-		}
-
 		// Render
 		return (
-			<div className={`form-field field-${this.props.name} node-password`}>
+			<div className={`form-field field-${this.props.name} node-time`}>
 				{this.props.label === 'above' &&
-					<label htmlFor={this.props.name}>
-						{this.props.display.__title__}
-					</label>
+					<label htmlFor={this.props.name}>{this.props.display.__title__}</label>
 				}
-				<input {...props} />
+				<input
+					className="form-input"
+					onChange={this.change}
+					onKeyDown={this.keyDown}
+					type="time"
+					value={this.state.value === null ? '' : this.state.value}
+				/>
 				{sError &&
 					<p className="define-error">{sError as string}</p>
 				}
@@ -138,4 +119,4 @@ export default class DefineNodePassword extends DefineNodeBase {
 }
 
 // Register with Node
-DefineNodeBase.pluginAdd('password', DefineNodePassword);
+DefineNodeBase.pluginAdd('time', DefineNodeTime);

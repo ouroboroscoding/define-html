@@ -1,5 +1,5 @@
 /**
- * Define Node Password
+ * Define Node Text
  *
  * Handles a single string define element
  *
@@ -18,30 +18,33 @@ import React, { InputHTMLAttributes } from 'react';
 import DefineNodeBase from './Base';
 
 // Types
+import { Types } from '@ouroboros/define';
 import { DefineNodeBaseProps } from './Base';
 
 /**
- * Node Password
+ * Node Text
  *
  * Handles values that are strings or string-like
  *
- * @name DefineNodePassword
+ * @name DefineNodeText
  * @access public
  * @extends DefineNodeBase
  */
-export default class DefineNodePassword extends DefineNodeBase {
+export default class DefineNodeText extends DefineNodeBase {
 
 	/**
 	 * Constructor
 	 *
 	 * Creates a new instance
 	 *
-	 * @name DefineNodePassword
+	 * @name DefineNodeText
 	 * @access public
 	 * @param props Properties passed to the component
 	 * @returns a new instance
 	 */
 	constructor(props: DefineNodeBaseProps) {
+
+		// Call the base
 		super(props);
 
 		// If there's a regex, override the node
@@ -77,7 +80,8 @@ export default class DefineNodePassword extends DefineNodeBase {
 
 		// Check the new value is valid
 		let error: string | false = false;
-		if(this.props.validation && !this.props.node.valid(sValue)) {
+		if(this.props.validation &&
+			!this.props.node.valid(sValue === '' ? null : sValue)) {
 			error = this.props.node.validationFailures[0][1];
 		}
 
@@ -107,22 +111,37 @@ export default class DefineNodePassword extends DefineNodeBase {
 						this.state.error;
 		}
 
+		// Initial inputProps
+		const inputProps: Record<string, any> = {};
+
 		// Initial props
 		const props: InputHTMLAttributes<HTMLInputElement> = {
 			className: 'form-input',
-			id: this.props.name,
 			onKeyDown: this.keyDown,
 			onChange: this.change,
 			placeholder: (this.props.label === 'placeholder')
 				? this.props.placeholder || this.props.display.__title__
 				: this.props.placeholder,
-			type: 'password',
+			type: 'text',
 			value: this.state.value === null ? '' : this.state.value
+		}
+
+		// Check if we have a display maximum
+		const iDisplayMax = this.props.display.__maximum__;
+		if(iDisplayMax) {
+			props.maxLength = iDisplayMax
+		}
+		// Else, check if we have a define maximum
+		else {
+			const minmax = (this.props.node as Node).minmax() as Types.MinMax;
+			if(minmax.maximum) {
+				props.maxLength = minmax.maximum;
+			}
 		}
 
 		// Render
 		return (
-			<div className={`form-field field-${this.props.name} node-password`}>
+			<div className={`form-field field-${this.props.name} node-text`}>
 				{this.props.label === 'above' &&
 					<label htmlFor={this.props.name}>
 						{this.props.display.__title__}
@@ -138,4 +157,4 @@ export default class DefineNodePassword extends DefineNodeBase {
 }
 
 // Register with Node
-DefineNodeBase.pluginAdd('password', DefineNodePassword);
+DefineNodeBase.pluginAdd('text', DefineNodeText);

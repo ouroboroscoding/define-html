@@ -8,6 +8,9 @@
  * @created 2023-02-17
  */
 
+// Ouroboros modules
+import { iso, timestamp } from '@ouroboros/dates';
+
 // NPM modules
 import React from 'react';
 
@@ -18,22 +21,22 @@ import DefineNodeBase from './Base';
 import { DefineNodeBaseProps } from './Base';
 
 /**
- * Node Datetime
+ * Node Timestamp
  *
- * Handles values that represent a date with a time
+ * Handles values that represent seconds since 1970
  *
- * @name DefineNodeDatetime
+ * @name DefineNodeTimestamp
  * @access public
  * @extends DefineNodeBase
  */
-export default class DefineNodeDatetime extends DefineNodeBase {
+export default class DefineNodeTimestamp extends DefineNodeBase {
 
 	/**
 	 * Constructor
 	 *
 	 * Creates a new instance
 	 *
-	 * @name DefineNodeDatetime
+	 * @name DefineNodeTimestamp
 	 * @access public
 	 * @param props Properties passed to the component
 	 * @returns a new instance
@@ -55,34 +58,42 @@ export default class DefineNodeDatetime extends DefineNodeBase {
 	 */
 	change(part: 'date' | 'time', value: string): void {
 
-		// Init the new value
-		let sValue: string;
+		// Convert the current timestamp into a date/time, if we have no current
+		//	timestamp, assume now
+		const sCurrent = iso(this.state.value || timestamp(), true, false);
 
 		// If we got the date part
+		let sDatetime: string;
 		if(part === 'date') {
-			sValue = value + ' ' + this.state.value.substring(11, 19);
+			sDatetime = value + ' ' + sCurrent.substring(11, 19);
 		} else {
-			sValue = this.state.value.substring(0, 10) + ' ' + value;
+			if(value.length === 5) {
+				value += ':00';
+			}
+			sDatetime = sCurrent.substring(0, 10) + ' ' + value;
 		}
+
+		// Convert it to a timestamp
+		let iValue = timestamp(sDatetime, false);
 
 		// If there's a callback
 		if(this.props.onChange) {
-			const mResult = this.props.onChange(sValue, this.state.value);
+			const mResult = this.props.onChange(iValue, this.state.value);
 			if(mResult !== undefined) {
-				sValue = mResult;
+				iValue = mResult;
 			}
 		}
 
 		// Check if it's valid
 		let error: string | false = false;
-		if(this.props.validation && !this.props.node.valid(sValue)) {
+		if(this.props.validation && !this.props.node.valid(iValue)) {
 			error = this.props.node.validationFailures[0][1];
 		}
 
 		// Update the state
 		this.setState({
 			error,
-			value: sValue
+			value: iValue
 		});
 	}
 
@@ -105,9 +116,14 @@ export default class DefineNodeDatetime extends DefineNodeBase {
 						this.state.error;
 		}
 
+		// Generate the date/time from the current timestamp
+		const sDatetime = this.state.value ?
+							iso(this.state.value, true, false) :
+							'0000-00-00 00:00:00';
+
 		// Render
 		return (
-			<div className={`form-field field-${this.props.name} node-datetime`}>
+			<div className={`form-field field-${this.props.name} node-timestamp`}>
 				{this.props.label === 'above' &&
 					<label>{this.props.display.__title__}</label>
 				}
@@ -118,7 +134,7 @@ export default class DefineNodeDatetime extends DefineNodeBase {
 							onChange={ev => this.change('date', ev.target.value)}
 							onKeyDown={this.keyDown}
 							type="date"
-							value={this.state.value.substring(0, 10)}
+							value={sDatetime.substring(0, 10)}
 						/>
 					</div>
 					<div className="node-datetime-time">
@@ -127,7 +143,7 @@ export default class DefineNodeDatetime extends DefineNodeBase {
 							onChange={ev => this.change('time', ev.target.value)}
 							onKeyDown={this.keyDown}
 							type="time"
-							value={this.state.value.substring(11, 19)}
+							value={sDatetime.substring(11, 19)}
 						/>
 					</div>
 				</div>
@@ -140,4 +156,4 @@ export default class DefineNodeDatetime extends DefineNodeBase {
 }
 
 // Register with Node
-DefineNodeBase.pluginAdd('datetime', DefineNodeDatetime);
+DefineNodeBase.pluginAdd('timestamp', DefineNodeTimestamp);

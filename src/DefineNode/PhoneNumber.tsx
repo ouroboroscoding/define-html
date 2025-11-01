@@ -99,22 +99,24 @@ export default class DefineNodePhoneNumber extends DefineNodeBase {
 		}
 
 		// Render
-		return <>
-			{this.props.label === 'above' &&
-				<label htmlFor={this.props.name}>{this.props.display.__title__}</label>
-			}
-			<PatternFormat
-				allowEmptyFormatting
-				className={`form-field field-${this.props.name} node-phone-number`}
-				format="1 (###) ### ####"
-				mask="_"
-				onValueChange={this.change}
-				value={this.state.value === null ? '' : this.state.value}
-			/>
-			{sError &&
-				<p className="define-error">{sError as string}</p>
-			}
-		</>;
+		return (
+			<div className={`form-field field-${this.props.name} node-phonenumber`}>
+				{this.props.label === 'above' &&
+					<label htmlFor={this.props.name}>{this.props.display.__title__}</label>
+				}
+				<PatternFormat
+					allowEmptyFormatting
+					className="form-input"
+					format="1 (###) ### ####"
+					mask="_"
+					onValueChange={this.change}
+					value={this.state.value === null ? '' : this.state.value}
+				/>
+				{sError &&
+					<p className="define-error">{sError as string}</p>
+				}
+			</div>
+		);
 	}
 }
 
